@@ -1,66 +1,52 @@
-## Foundry
+# Поздняк Ульяна Андреевна, группа 2461
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+# Zombie Factory (Фабрика Криптозомби)
 
-Foundry consists of:
+Практическая работа № 2 — разработка смарт-контракта `ZombieFactory` на Solidity версии `^0.8.20` с использованием Foundry (Forge).
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Контракт позволяет пользователю создать одного зомби, указав его имя. Каждому зомби присваиваются уникальный идентификатор, ДНК и дата создания. Данные о персонажах и их владельцах сохраняются в блокчейне, а факт создания фиксируется событием `ZombieCreated`.
 
-## Documentation
+## Основные методы
 
-https://book.getfoundry.sh/
+| Метод | Назначение |
+| :--- | :--- |
+| `createZombie(name)` | Создание нового персонажа |
+| `totalZombies()` | Получение общего количества зомби |
+| `getZombie(id)` | Просмотр характеристик персонажа |
+| `keccak256()` | Вычисление хеша, который используется для получения ДНК зомби |
+| `abi.encodePacked()` | Объединение адреса владельца и имени зомби в данные для хеширования |
 
-## Usage
+## Запуск и тестирование
 
-### Build
+Для сборки и проверки проекта используются следующие команды:
 
-```shell
-$ forge build
+```bash
+forge build
+forge test -vv
 ```
 
-### Test
+## Тесты
 
-```shell
-$ forge test
+Команда:
+
+```bash
+forge test -vv
 ```
 
-### Format
+Результат:
 
-```shell
-$ forge fmt
+```text
+Ran 5 tests for test/ZombieFactory.t.sol:ZombieFactoryTest
+[PASS] test_CannotCreateSecondZombie() (gas: 198119)
+[PASS] test_CannotCreateWithEmptyName() (gas: 33584)
+[PASS] test_DnaIsInCorrectRange() (gas: 188992)
+[PASS] test_TwoUsersGetDifferentIds() (gas: 321656)
+[PASS] test_User1CreatesFirstZombie() (gas: 215766)
+Suite result: ok. 5 passed; 0 failed; 0 skipped; finished in 20.02ms (15.79ms CPU time)
 ```
 
-### Gas Snapshots
+## Почему вычисление ДНК не является безопасной случайностью?
 
-```shell
-$ forge snapshot
-```
+ДНК не является безопасной случайностью, поскольку вычисляется из известных данных — адреса пользователя и имени зомби. Функция `keccak256` является детерминированной, поэтому результат можно заранее вычислить.
 
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Для получения безопасной случайности можно использовать **Chainlink VRF** или механизм **commit-reveal**.
